@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.employeesMapper">
+	<resultMap id="EmployeesResultMap" type="com.etc.entity.Employees">
+		<id property="empNo" column="EMPNO"/>
+		<result property="empName" column="EMPNAME"/>
+		<result property="salary" column="SALARY"/>
+		<result property="job" column="JOB"/>
+		<association property="dept" javaType="com.etc.entity.Department">
+			<id property="deptNo" column="DEPTNO"/>
+			<result property="deptName" column="DEPTNAME"/>
+			<result property="deptHeader" column="DEPTHEADER"/>		
+			<association property="company" javaType="com.etc.entity.Company">
+				<id property="companyId" column="COMPANYID"/>
+				<result property="companyName" column="COMPANYNAME"/>
+				<result property="companyTel" column="COMPANYTEL"/>
+				<result property="companyFax" column="COMPANYFAX"/>
+				<result property="companyAddress" column="COMPANYADDRESS"/>
+				<result property="companyLegalPerson" column="COMPANYLEGALPERSON"/>
+				<result property="companyAccount" column="COMPANYACCOUNT"/>
+				<result property="companyEmail" column="COMPANYEMAIL"/>
+				<result property="companyUrl" column="COMPANYURL"/>	
+			</association>
+		</association>
+	</resultMap>
+	<select id="queryEmployeesAll" resultMap="EmployeesResultMap">
+		SELECT e.empNo,e.empname,e.salary,e.job,d.deptNo,d.deptname,d.deptheader FROM tbl_employees e,tbl_department d WHERE e.deptno=d.deptno
+	</select>
+	<select id="queryEmployees" parameterType="int" resultMap="EmployeesResultMap">
+		SELECT E.EMPNO,E.EMPNAME,E.SALARY,E.JOB,E.DEPTNO FROM TBL_EMPLOYEES E, TBL_STOCKORDER S WHERE E.EMPNO=S.EMPNO AND S.STO_ID=#{stoId}
+	</select>
+	<update id="addEmployees" parameterType="Employees" >
+		INSERT INTO tbl_employees VALUES(#{empNo},#{empName},#{salary},#{job},#{dept.deptNo})  	
+	</update>
+	<delete id="deleteEmployees" parameterType="Employees" >
+		DELETE FROM tbl_employees WHERE EMPNO=#{empNo}
+		</delete>
+	<delete id="editorEmployees">
+		UPDATE tbl_employees SET salary=#{salary},job=#{job} WHERE empNo=#{empNo}
+	</delete>
+</mapper>

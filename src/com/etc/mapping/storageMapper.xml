@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.storageMapper">
+	<!-- 查询入库信息 -->
+	<select id="queryStorageIn" resultMap="StorageInfoResultMap" parameterType="java.util.HashMap">
+		SELECT
+		SI.STORAGEID,SI.STORAGEGOODCOUNT,SI.INSTORCOUNT,SI.OUTSTORCOUNT,SI.STORAGETYPE,SI.INSTORTIME,SI.OUTSTORTIME,
+		G.GOODSID,G.GOODSNAME,G.BRAND,G.PRODUCTMODEL,
+		GT.GOODSTYPEID,GT.GOODSTYPE,
+		S.SUPPLIERID,S.SUPPLIERNAME
+		FROM TBL_STORAGEINFO SI,TBL_GOODS G,TBL_GOODSTYPE GT,TBL_SUPPLIER S
+		WHERE SI.GOODSNO=G.GOODSID AND G.GOODSTYPEID=GT.GOODSTYPEID AND G.SUPPLIERID=S.SUPPLIERID
+		<if test="goodsid!=null and goodsid!=''">
+			AND GOODSNO=#{goodsid}		
+		</if>
+		<choose>
+			<when test="storageType!=null and storageType != ''">
+				AND STORAGETYPE=#{storageType}
+			</when>
+			<otherwise>
+				AND STORAGETYPE like '%入库'
+			</otherwise>
+		</choose>
+		
+		<if test="beginTime!=null and beginTime != ''">
+			AND INSTORTIME <![CDATA[>=]]> to_date(#{beginTime},'yyyy-mm-dd')
+		</if>
+		<if test="endTime!=null and endTime != ''">
+			AND INSTORTIME <![CDATA[<=]]> to_date(#{endTime},'yyyy-mm-dd')
+		</if>
+	</select>
+	<!-- 查询出库信息 -->
+	<select id="queryStorageOut" resultMap="StorageInfoResultMap" parameterType="java.util.HashMap">
+		SELECT
+		SI.STORAGEID,SI.STORAGEGOODCOUNT,SI.INSTORCOUNT,SI.OUTSTORCOUNT,SI.STORAGETYPE,SI.INSTORTIME,SI.OUTSTORTIME,
+		G.GOODSID,G.GOODSNAME,G.BRAND,G.PRODUCTMODEL,
+		GT.GOODSTYPEID,GT.GOODSTYPE,
+		S.SUPPLIERID,S.SUPPLIERNAME
+		FROM TBL_STORAGEINFO SI,TBL_GOODS G,TBL_GOODSTYPE GT,TBL_SUPPLIER S
+		WHERE SI.GOODSNO=G.GOODSID AND G.GOODSTYPEID=GT.GOODSTYPEID AND G.SUPPLIERID=S.SUPPLIERID
+		<if test="goodsid!=null and goodsid!=''">
+			AND GOODSNO=#{goodsid}		
+		</if>
+		<choose>
+			<when test="storageType!=null and storageType != ''">
+				AND STORAGETYPE=#{storageType}
+			</when>
+			<otherwise>
+				AND STORAGETYPE like '%出库'
+			</otherwise>
+		</choose>
+		
+		<if test="beginTime!=null and beginTime != ''">
+			AND OUTSTORTIME <![CDATA[>=]]> to_date(#{beginTime},'yyyy-mm-dd')
+		</if>
+		<if test="endTime!=null and endTime != ''">
+			AND OUTSTORTIME <![CDATA[<=]]> to_date(#{endTime},'yyyy-mm-dd')
+		</if>
+	</select>
+	<!-- 查询是否存在此商品 -->
+	<select id="queryGoods" resultType="int" parameterType="int">
+		SELECT COUNT(1) FROM TBL_STORAGEINFO WHERE GOODSNO=#{ID} AND STORAGETYPE IS NULL
+	</select>
+	<!-- 添加入库单 -->
+	<insert id="addStorageInFirst" parameterType="StorageInfo">
+		INSERT INTO TBL_STORAGEINFO(STORAGEID,GOODSNO,STORAGEGOODCOUNT)
+		VALUES(TBL_STORAGEINFO_SEQ.NEXTVAL,#{goods.goodsId},#{storageGoodCount})
+	</insert>
+	<insert id="addStorageIn" parameterType="StorageInfo">
+		INSERT INTO
+		TBL_STORAGEINFO(STORAGEID,GOODSNO,INSTORCOUNT,STORAGETYPE,INSTORTIME)
+		VALUES(TBL_STORAGEINFO_SEQ.NEXTVAL,#{goods.goodsId},#{inStorCount},#{storageType},#{inStorTime})
+	</insert>
+	<!-- 添加出库单 -->
+	<insert id="addStorageOut" parameterType="StorageInfo">
+		INSERT INTO
+		TBL_STORAGEINFO(STORAGEID,GOODSNO,OUTSTORCOUNT,STORAGETYPE,OUTSTORTIME)
+		VALUES(TBL_STORAGEINFO_SEQ.NEXTVAL,#{goods.goodsId},#{outStorCount},#{storageType},#{outStorTime})
+	</insert>
+	<!-- 查询对应商品的库存数量 -->
+	<select id="queryStorageGoodCount" parameterType="int" resultType="int">
+		SELECT STORAGEGOODCOUNT FROM TBL_STORAGEINFO WHERE GOODSNO=#{id} AND STORAGETYPE IS NULL
+	</select>
+	<!-- 修改库存数量 -->
+	<update id="upStorageCount" parameterType="StorageInfo">
+		UPDATE TBL_STORAGEINFO SET STORAGEGOODCOUNT=#{storageGoodCount} WHERE GOODSNO=#{goods.goodsId} AND STORAGETYPE IS NULL
+	</update>
+	
+	
+	<resultMap type="StorageInfo" id="StorageInfoResultMap">
+		<id property="storageId" column="STORAGEID" />
+		<result property="storageGoodCount" column="STORAGEGOODCOUNT" />
+		<result property="inStorCount" column="INSTORCOUNT" />
+		<result property="outStorCount" column="OUTSTORCOUNT" />
+		<result property="storageType" column="STORAGETYPE" />
+		<result property="inStorTime" column="INSTORTIME" />
+		<result property="outStorTime" column="OUTSTORTIME"/>
+		<association property="goods" javaType="Goods">
+			<id property="goodsId" column="GOODSID"/>
+			<result property="goodsName" column="GOODSNAME"/>
+			<result property="brand" column="BRAND"/>
+			<result property="productModel" column="PRODUCTMODEL"/>
+			<result property="costPrice" column="COSTPRICE"/>
+			<result property="retailPrice" column="RETAILPRICE"/>
+			<result property="goodsCode" column="GOODSCODE"/>
+			<result property="barCode" column="BARCODE"/>
+			<association property="goodsType" javaType="GoodsType">
+				<id property="goodsTypeId" column="GOODSTYPEID"/>
+				<result property="goodsType" column="GOODSTYPE"/>
+			</association>
+			<association property="supplier" javaType="Supplier">
+				<id property="supplierId" column="SUPPLIERID"/>
+				<result property="supplierName" column="SUPPLIERNAME"/>
+				<result property="supplierType" column="SUPPLIERTYPE"/>
+				<result property="contacts" column="CONTACTS"/>
+				<result property="contactTel" column="CONTACTTEL"/>
+				<result property="supplierAddress" column="SUPPLIERADDRESS"/>
+				<result property="supplierFax" column="SUPPLIERFAX"/>
+				<result property="supplierInfo" column="SUPPLIERINFO"/>
+				<result property="supplierAssess" column="SUPPLIERASSESS"/>
+			</association>
+		</association>
+	</resultMap>
+
+
+</mapper>

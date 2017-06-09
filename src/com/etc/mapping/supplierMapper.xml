@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.supplierMapper">
+	<resultMap id="SupplierResultMap" type="com.etc.entity.Supplier">
+		<id property="supplierId" column="SUPPLIERID"/>
+		<result property="supplierName" column="SUPPLIERNAME"/>
+		<result property="supplierType" column="SUPPLIERTYPE"/>
+		<result property="contacts" column="CONTACTS"/>
+		<result property="contactTel" column="CONTACTTEL"/>
+		<result property="supplierAddress" column="SUPPLIERADDRESS"/>
+		<result property="supplierFax" column="SUPPLIERFAX"/>
+		<result property="supplierInfo" column="SUPPLIERINFO"/>
+		<result property="supplierAssess" column="SUPPLIERASSESS"/>
+		
+	</resultMap>
+	<select id="querySupplierAll" resultMap="SupplierResultMap">
+		SELECT supplierId,supplierName,supplierType,contacts,contactTEL,supplierAddress,supplierFax,supplierInfo,supplierAssess FROM tbl_supplier
+	</select>
+	<update id="addSupplier" parameterType="Supplier" >
+		INSERT INTO tbl_supplier VALUES(#{supplierId},#{supplierName},#{supplierType},#{contacts},#{contactTel},#{supplierAddress},#{supplierFax},#{supplierInfo},#{supplierAssess})  	
+	</update>
+	<delete id="deleteSupplier" parameterType="Supplier" >
+		DELETE FROM tbl_supplier WHERE supplierId=#{supplierId}
+		</delete>
+		<update id="editorSupplier">
+		UPDATE tbl_supplier SET supplierName=#{supplierName},supplierType=#{supplierType},contacts=#{contacts},contactTel=#{contactTel},supplierAddress=#{supplierAddress},supplierFax=#{supplierFax},supplierInfo=#{supplierInfo},supplierAssess=#{supplierAssess} WHERE supplierId=#{supplierId}
+	</update>
+</mapper>

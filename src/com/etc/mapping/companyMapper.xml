@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.companyMapper">
+<select id="queryCompanyAll" resultType="Company">
+	SELECT COMPANYID,COMPANYNAME,COMPANYTEL,COMPANYFAX,COMPANYADDRESS,COMPANYLEGALPERSON,COMPANYACCOUNT,COMPANYEMAIL,COMPANYURL FROM TBL_COMPANY
+</select>
+<update id="alterCompany" parameterType="Company">
+	UPDATE TBL_COMPANY SET COMPANYTEL=#{companyTel},COMPANYFAX=#{companyFax},COMPANYADDRESS=#{companyAddress},COMPANYEMAIL=#{companyEmail} WHERE COMPANYID = #{companyId}
+</update>
+</mapper>

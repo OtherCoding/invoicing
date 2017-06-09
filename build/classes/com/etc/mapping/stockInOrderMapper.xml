@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.stockInOrderMapper">
+	<resultMap id="stockInOrderMapper" type="com.etc.entity.StockInOrder">
+		<id property="stoArriveId" column="SARRIVEID" />
+		<result property="stoArriveTime" column="SARRIVETIME" />
+		<result property="stoArriveNum" column="SARRIVENUM" />
+		<association property="emp" javaType="com.etc.entity.Employees">
+			<id property="empNo" column="EMPNO" />
+			<result property="empName" column="EMPNAME" />
+			<result property="salary" column="SALARY" />
+			<result property="job" column="JOB" />
+			<association property="dept" javaType="com.etc.entity.Department">
+				<id property="deptNo" column="MOVIETYPEID" />
+				<result property="deptName" column="MOVIETYPE" />
+				<result property="deptHeader" column="MOVIETYPE" />
+				<association property="company" javaType="com.etc.entity.Company">
+					<id property="companyId" column="COMPANYID" />
+					<result property="companyName" column="COMPANYNAME" />
+					<result property="companyTel" column="COMPANYTEL" />
+					<result property="companyFax" column="COMPANYFAX" />
+					<result property="companyAddress" column="COMPANYADDRESS" />
+					<result property="companyLegalPerson" column="COMPANYLEGALPERSON" />
+					<result property="companyAccount" column="COMPANYACCOUNT" />
+					<result property="companyEmail" column="COMPANYEMAIL" />
+					<result property="companyUrl" column="COMPANYURL" />
+				</association>
+			</association>
+		</association>
+		<association property="stockOrder" javaType="com.etc.entity.StockOrder">
+			<id property="stoId" column="STO_ID" />
+		<result property="stoNum" column="STONUM" />
+		<association property="goods" javaType="com.etc.entity.Goods">
+			<id property="goodsId" column="GOODSID"/>
+			<result property="goodsName" column="GOODSNAME"/>
+			<result property="brand" column="BRAND"/>
+			<result property="productModel" column="PRODUCTMODEL"/>
+			<result property="costPrice" column="COSTPRICE"/>
+			<result property="retailPrice" column="RETAILPRICE"/>
+			<result property="goodsCode" column="GOODSCODE"/>
+			<result property="barCode" column="BARCODE"/>
+			<association property="goodsType" javaType="com.etc.entity.GoodsType">
+				<id property="goodsTypeId" column="GOODSTYPEID"/>
+				<result property="goodsType" column="GOODSTYPE"/>
+			</association>
+			<association property="supplier" javaType="com.etc.entity.Supplier">
+				<id property="supplierId" column="SUPPLIERID"/>
+				<result property="supplierName" column="SUPPLIERNAME"/>
+				<result property="supplierType" column="SUPPLIERTYPE"/>
+				<result property="contacts" column="CONTACTS"/>
+				<result property="contactTel" column="CONTACTTEL"/>
+				<result property="supplierAddress" column="SUPPLIERADDRESS"/>
+				<result property="supplierFax" column="SUPPLIERFAX"/>
+				<result property="supplierInfo" column="SUPPLIERINFO"/>
+				<result property="supplierAssess" column="SUPPLIERASSESS"/>
+			</association>
+		</association>
+		<association property="emp" javaType="com.etc.entity.Employees">
+			<id property="empNo" column="EMPNO" />
+			<result property="empName" column="EMPNAME" />
+			<result property="salary" column="SALARY" />
+			<result property="job" column="JOB" />
+			<association property="dept" javaType="com.etc.entity.Department">
+				<id property="deptNo" column="MOVIETYPEID" />
+				<result property="deptName" column="MOVIETYPE" />
+				<result property="deptHeader" column="MOVIETYPE" />
+				<association property="company" javaType="com.etc.entity.Company">
+					<id property="companyId" column="COMPANYID" />
+					<result property="companyName" column="COMPANYNAME" />
+					<result property="companyTel" column="COMPANYTEL" />
+					<result property="companyFax" column="COMPANYFAX" />
+					<result property="companyAddress" column="COMPANYADDRESS" />
+					<result property="companyLegalPerson" column="COMPANYLEGALPERSON" />
+					<result property="companyAccount" column="COMPANYACCOUNT" />
+					<result property="companyEmail" column="COMPANYEMAIL" />
+					<result property="companyUrl" column="COMPANYURL" />
+				</association>
+			</association>
+		</association>
+		</association>
+	</resultMap>
+
+	<select id="getStockInOrderAll" resultMap="stockInOrderMapper">
+		SELECT SIO.SARRIVEID,SIO.EMPNO,SIO.STO_ID,SIO.SARRIVETIME,SIO.SARRIVENUM,E.EMPNO,E.EMPNAME,E.SALARY,E.JOB,E.DEPTNO,D.DEPTNO,D.DEPTNAME,D.COMPANYID,D.DEPTHEADER,C.COMPANYID,C.COMPANYNAME,C.COMPANYTEL,C.COMPANYFAX,C.COMPANYADDRESS,C.COMPANYLEGALPERSON,C.COMPANYACCOUNT,C.COMPANYEMAIL,C.COMPANYURL,SO.STO_ID,SO.GOODSNO,SO.EMPNO,SO.STONUM,G.GOODSID,G.GOODSTYPEID,G.GOODSNAME,G.BRAND,G.PRODUCTMODEL,G.COSTPRICE,G.RETAILPRICE,G.GOODSCODE,G.BARCODE,G.SUPPLIERID FROM TBL_STOCKINORDER SIO, TBL_EMPLOYEES E, TBL_DEPARTMENT D, TBL_COMPANY C, TBL_STOCKORDER SO, TBL_GOODS G WHERE SIO.EMPNO=E.EMPNO AND E.DEPTNO=D.DEPTNO AND D.COMPANYID=C.COMPANYID AND SIO.STO_ID=SO.STO_ID AND SO.GOODSNO=G.GOODSID ORDER BY SIO.SARRIVEID
+	</select>
+	<!-- 向数据表中插入AddStockInOrder -->
+	<insert id="AddStockInOrder" parameterType="StockInOrder">
+		INSERT INTO TBL_StockInOrder VALUES(TBL_StockInOrder_seq.NEXTVAL,#{emp.empNo},#{stockOrder.stoId},#{stoArriveTime},#{stoArriveNum})
+	</insert>
+	<!-- 删除 DelStockInOrder -->
+	<delete id="DelStockInOrder" parameterType="StockInOrder">
+		DELETE FROM TBL_STOCKINORDER S WHERE S.SARRIVEID=#{stoArriveId}
+	</delete>
+	<!--更新 updateStockInOrder -->
+	<update id="updateStockInOrder" parameterType="StockInOrder">
+		UPDATE TBL_STOCKINORDER S SET S.SARRIVENUM=#{stoArriveNum} WHERE S.SARRIVEID=#{stoArriveId}
+	</update>
+</mapper>

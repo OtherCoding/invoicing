@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<package name="com.etc.entity"/>
+	</typeAliases>
+	
+	<mappers>
+		<!-- 销售模块 -->
+		<mapper resource="com/etc/mapping/sellMapper.xml"/>
+		<mapper resource="com/etc/mapping/sellOutHouseMapper.xml"/>
+		<mapper resource="com/etc/mapping/sellBackHouseMapper.xml"/>
+		<mapper resource="com/etc/mapping/getMoneyMapper.xml"/>
+		<!-- 采购模块 -->
+		<mapper resource="com/etc/mapping/stockOrderMapper.xml"/>
+		<mapper resource="com/etc/mapping/stockInOrderMapper.xml"/>
+		<mapper resource="com/etc/mapping/stockReturnOrderMapper.xml"/>
+		<!-- 采购模块 -->
+		<mapper resource="com/etc/mapping/storageMapper.xml"/>
+		<!-- 基础信息模块 -->
+		<mapper resource="com/etc/mapping/employeesMapper.xml"/>
+		<mapper resource="com/etc/mapping/goodsMapper.xml"/>
+		<mapper resource="com/etc/mapping/supplierMapper.xml"/>
+		<!-- 系统管理模块 -->
+		<mapper resource="com/etc/mapping/managerMapper.xml"/>
+		<mapper resource="com/etc/mapping/companyMapper.xml"/>
+	</mappers>
+</configuration>

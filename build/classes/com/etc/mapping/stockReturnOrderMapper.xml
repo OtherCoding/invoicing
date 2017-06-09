@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.stockReturnOrderMapper">
+	<resultMap id="stockReturnOrderMapper" type="StockReturnOrder">
+		<id property="stoReturnId" column="STORETURNID" />
+		<result property="stoReturnTime" column="STORETURNTIME" />
+		<result property="stoReturnNum" column="STORETURNNUM" />
+		<association property="goods" javaType="com.etc.entity.Goods">
+			<id property="goodsId" column="GOODSID" />
+			<result property="goodsName" column="GOODSNAME" />
+			<result property="brand" column="BRAND" />
+			<result property="productModel" column="PRODUCTMODEL" />
+			<result property="costPrice" column="COSTPRICE" />
+			<result property="retailPrice" column="RETAILPRICE" />
+			<result property="goodsCode" column="GOODSCODE" />
+			<result property="barCode" column="BARCODE" />
+			<association property="goodsType" javaType="com.etc.entity.GoodsType">
+				<id property="goodsTypeId" column="GOODSTYPEID" />
+				<result property="goodsType" column="GOODSTYPE" />
+			</association>
+			<association property="supplier" javaType="com.etc.entity.Supplier">
+				<id property="supplierId" column="SUPPLIERID" />
+				<result property="supplierName" column="SUPPLIERNAME" />
+				<result property="supplierType" column="SUPPLIERTYPE" />
+				<result property="contacts" column="CONTACTS" />
+				<result property="contactTel" column="CONTACTTEL" />
+				<result property="supplierAddress" column="SUPPLIERADDRESS" />
+				<result property="supplierFax" column="SUPPLIERFAX" />
+				<result property="supplierInfo" column="SUPPLIERINFO" />
+				<result property="supplierAssess" column="SUPPLIERASSESS" />
+			</association>
+		</association>
+		<association property="emp" javaType="com.etc.entity.Employees">
+			<id property="empNo" column="EMPNO" />
+			<result property="empName" column="EMPNAME" />
+			<result property="salary" column="SALARY" />
+			<result property="job" column="JOB" />
+
+			<association property="dept" javaType="com.etc.entity.Department">
+				<id property="deptNo" column="MOVIETYPEID" />
+				<result property="deptName" column="MOVIETYPE" />
+				<result property="deptHeader" column="MOVIETYPE" />
+				<association property="company" javaType="com.etc.entity.Company">
+					<id property="companyId" column="COMPANYID" />
+					<result property="companyName" column="COMPANYNAME" />
+					<result property="companyTel" column="COMPANYTEL" />
+					<result property="companyFax" column="COMPANYFAX" />
+					<result property="companyAddress" column="COMPANYADDRESS" />
+					<result property="companyLegalPerson" column="COMPANYLEGALPERSON" />
+					<result property="companyAccount" column="COMPANYACCOUNT" />
+					<result property="companyEmail" column="COMPANYEMAIL" />
+					<result property="companyUrl" column="COMPANYURL" />
+				</association>
+			</association>
+		</association>
+	</resultMap>
+	
+	<select id="getStockReturnOrderAll" resultMap="stockReturnOrderMapper">
+		SELECT S.STORETURNID,S.GOODSNO,S.EMPNO,S.STORETURNTIME,S.STORETURNNUM,G.GOODSID,G.GOODSTYPEID,G.GOODSNAME,G.BRAND,G.PRODUCTMODEL,G.COSTPRICE,G.RETAILPRICE,G.GOODSCODE,G.BARCODE,G.SUPPLIERID,E.EMPNO,E.EMPNAME,E.SALARY,E.JOB,E.DEPTNO FROM TBL_STOCKRETURNORDER S, TBL_GOODS G, TBL_EMPLOYEES E WHERE S.GOODSNO=G.GOODSID AND S.EMPNO=E.EMPNO ORDER BY S.STORETURNID
+	</select>
+	<!-- AddStockReturnOrder -->
+	<insert id="AddStockReturnOrder" parameterType="StockReturnOrder">
+		INSERT INTO tbl_StockReturnOrder  VALUES(tbl_StockReturnOrder_seq.NEXTVAL,#{goods.goodsId},#{emp.empNo},#{stoReturnTime},#{stoReturnNum})
+	</insert>
+	
+	<!--删除 delStockReturnOrder -->
+	<delete id="delStockReturnOrder" parameterType="StockReturnOrder">
+		DELETE FROM TBL_STOCKRETURNORDER S WHERE S.STORETURNID=#{stoReturnId}
+	</delete>
+	<!-- 更新updateStockReturnOrder -->
+	<update id="updateStockReturnOrder" parameterType="StockReturnOrder">
+		UPDATE TBL_STOCKRETURNORDER S SET S.STORETURNNUM=#{stoReturnNum} WHERE S.STORETURNID=#{stoReturnId}
+	</update>
+</mapper>

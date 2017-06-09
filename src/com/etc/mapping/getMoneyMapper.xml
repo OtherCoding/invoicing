@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.getMoneyMapper">
+	<resultMap id="getMoneyResultMap" type="GetMoney">
+		<id property="getMoneySheetId" column="GETMONEYSHEETID"/>
+		<result property="shouldGetMoney" column="SHOULDGETMONEY"/>
+		<result property="getMoney" column="GETMONEY"/>
+		<association property="sell" javaType="com.etc.entity.Sell">
+			<id property="sellId" column="SELLID"/>
+			<result property="counts" column="COUNTS"/>
+			<result property="sellSinglePrice" column="SELLSINGLEPRICE"/>
+			<result property="sellTime" column="SELLTIME"/>
+			<result property="outHouseTime" column="OUTHOUSETIME"/>
+			
+			<association property="goods" javaType="com.etc.entity.Goods">
+				<id property="goodsId" column="GOODSID"/>
+				<result property="goodsName" column="GOODSNAME"/>
+				<result property="brand" column="BRAND"/>
+				<result property="productModel" column="PRODUCTMODEL"/>
+				<result property="costPrice" column="COSTPRICE"/>
+				<result property="retailPrice" column="RETAILPRICE"/>
+				<result property="goodsCode" column="GOODSCODE"/>
+				<result property="barCode" column="BARCODE"/>
+				
+				<association property="goodsType" javaType="com.etc.entity.GoodsType">
+					<id property="goodsTypeId" column="GOODSTYPEID"/>
+					<result property="goodsType" column="GOODSTYPE"/>
+				</association>
+				
+				<association property="supplier" javaType="com.etc.entity.Supplier">
+					<id property="supplierId" column="SUPPLIERID"/>
+					<result property="supplierName" column="SUPPLIERNAME"/>
+					<result property="supplierType" column="SUPPLIERTYPE"/>
+					<result property="contacts" column="CONTACTS"/>
+					<result property="contactTel" column="CONTACTTEL"/>
+					<result property="supplierAddress" column="SUPPLIERADDRESS"/>
+					<result property="supplierFax" column="SUPPLIERFAX"/>
+					<result property="supplierInfo" column="SUPPLIERINFO"/>
+					<result property="supplierAssess" column="SUPPLIERASSESS"/>
+				</association>
+			</association>
+		</association>
+	</resultMap>
+	<select id="queryGetMoneyAll" resultMap="getMoneyResultMap">
+		SELECT G2.GETMONEYSHEETID,G2.SELLSHEETID,G2.SHOULDGETMONEY,G2.GETMONEY,
+		S1.SELLID,S1.GOODSID,S1.COUNTS,S1.SELLSINGLEPRICE,S1.SELLTIME,
+		G1.GOODSID,G1.GOODSTYPEID,G1.GOODSNAME,G1.BRAND,G1.PRODUCTMODEL,G1.COSTPRICE,G1.RETAILPRICE,G1.GOODSCODE,G1.BARCODE,G1.SUPPLIERID,
+		G2.GOODSTYPEID,G2.GOODSTYPE,
+		S2.SUPPLIERID,S2.SUPPLIERNAME,S2.SUPPLIERTYPE,S2.CONTACTS,S2.CONTACTTEL,S2.SUPPLIERADDRESS,S2.SUPPLIERFAX,S2.SUPPLIERINFO,S2.SUPPLIERASSESS FROM TBL_SELL S1,TBL_GOODS G1,TBL_GOODSTYPE G2,TBL_SUPPLIER S2,TBL_GETMONEY G2 WHERE S1.GOODSID=G1.GOODSID AND G1.GOODSTYPEID=G2.GOODSTYPEID AND S2.SUPPLIERID=G1.SUPPLIERID AND G2.SELLSHEETID=S1.SELLID ORDER BY G2.GETMONEYSHEETID
+	</select>
+	
+	<delete id="deleteGetMoney">
+		DELETE FROM TBL_GETMONEY WHERE GETMONEYSHEETID=#{deleteGetMoneyId}
+	</delete>
+	
+	<update id="editorGetMoney">
+		UPDATE TBL_GETMONEY SET SHOULDGETMONEY=#{shouldGetMoney},GETMONEY=#{getMoney} WHERE GETMONEYSHEETID=#{getMoneySheetId}
+	</update>
+	
+	<insert id="addGetMoney">
+		INSERT INTO TBL_GETMONEY VALUES(tbl_GetMoney_seq.NEXTVAL,#{sell.sellId},#{shouldGetMoney},#{getMoney})
+	</insert>
+</mapper>

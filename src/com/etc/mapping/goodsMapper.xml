@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.goodsMapper">
+	<resultMap id="GoodsResultMap" type="com.etc.entity.Goods">
+		<id property="goodsId" column="GOODSID"/>
+			<result property="goodsName" column="GOODSNAME"/>
+			<result property="brand" column="BRAND"/>
+			<result property="productModel" column="PRODUCTMODEL"/>
+			<result property="costPrice" column="COSTPRICE"/>
+			<result property="retailPrice" column="RETAILPRICE"/>
+			<result property="goodsCode" column="GOODSCODE"/>
+			<result property="barCode" column="BARCODE"/>
+			<association property="goodsType" javaType="com.etc.entity.GoodsType">
+				<id property="goodsTypeId" column="GOODSTYPEID"/>
+				<result property="goodsType" column="GOODSTYPE"/>
+			</association>
+			<association property="supplier" javaType="com.etc.entity.Supplier">
+				<id property="supplierId" column="SUPPLIERID"/>
+				<result property="supplierName" column="SUPPLIERNAME"/>
+				<result property="supplierType" column="SUPPLIERTYPE"/>
+				<result property="contacts" column="CONTACTS"/>
+				<result property="contactTel" column="CONTACTTEL"/>
+				<result property="supplierAddress" column="SUPPLIERADDRESS"/>
+				<result property="supplierFax" column="SUPPLIERFAX"/>
+				<result property="supplierInfo" column="SUPPLIERINFO"/>
+				<result property="supplierAssess" column="SUPPLIERASSESS"/>
+			</association>
+	</resultMap>
+	<select id="queryGoodsAll" resultMap="GoodsResultMap">
+		SELECT G.GOODSID,GT.GOODSTYPE,G.GOODSNAME,G.BRAND,G.PRODUCTMODEL,G.COSTPRICE,G.RETAILPRICE,G.GOODSCODE,G.BARCODE,G.SUPPLIERID,S.SUPPLIERNAME FROM TBL_GOODS G,TBL_GOODSTYPE GT,TBL_SUPPLIER S WHERE G.GOODSTYPEID=GT.GOODSTYPEID AND G.SUPPLIERID=S.SUPPLIERID
+	</select>
+	<insert id="addGoods" parameterType="Goods">
+		INSERT INTO TBL_GOODS VALUES(#{goodsId},#{goodsType.goodsType},#{goodsName},#{brand},#{productModel},#{costPrice},#{retailPrice},#{goodsCode},#{barCode},#{supplier.supplierId})  	
+	</insert>
+	<delete id="deleteGoods" parameterType="Goods">
+		DELETE FROM TBL_GOODS WHERE goodsId=#{goodsId}
+	</delete>
+	</mapper>

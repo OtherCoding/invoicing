@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.sellBackHouseMapper">
+	<resultMap id="sellBackHouseResultMap" type="com.etc.entity.SellBackHouse">
+		<id property="sellbackSheetId" column="SELLBACKSHEETID"/>
+		<result property="backGoodsTime" column="BACKGOODSTIME"/>
+		<result property="counts" column="COUNTS"/>
+		<association property="sell" javaType="com.etc.entity.Sell">
+			<id property="sellId" column="SELLID"/>
+			<result property="counts" column="COUNTS"/>
+			<result property="sellSinglePrice" column="SELLSINGLEPRICE"/>
+			<result property="sellTime" column="SELLTIME"/>
+			
+			<result property="outHouseTime" column="OUTHOUSETIME"/>
+			
+			<association property="goods" javaType="com.etc.entity.Goods">
+				<id property="goodsId" column="GOODSID"/>
+				<result property="goodsName" column="GOODSNAME"/>
+				<result property="brand" column="BRAND"/>
+				<result property="productModel" column="PRODUCTMODEL"/>
+				<result property="costPrice" column="COSTPRICE"/>
+				<result property="retailPrice" column="RETAILPRICE"/>
+				<result property="goodsCode" column="GOODSCODE"/>
+				<result property="barCode" column="BARCODE"/>
+				
+				<association property="goodsType" javaType="com.etc.entity.GoodsType">
+					<id property="goodsTypeId" column="GOODSTYPEID"/>
+					<result property="goodsType" column="GOODSTYPE"/>
+				</association>
+				
+				<association property="supplier" javaType="com.etc.entity.Supplier">
+					<id property="supplierId" column="SUPPLIERID"/>
+					<result property="supplierName" column="SUPPLIERNAME"/>
+					<result property="supplierType" column="SUPPLIERTYPE"/>
+					<result property="contacts" column="CONTACTS"/>
+					<result property="contactTel" column="CONTACTTEL"/>
+					<result property="supplierAddress" column="SUPPLIERADDRESS"/>
+					<result property="supplierFax" column="SUPPLIERFAX"/>
+					<result property="supplierInfo" column="SUPPLIERINFO"/>
+					<result property="supplierAssess" column="SUPPLIERASSESS"/>
+				</association>
+			</association>
+		</association>
+	</resultMap>
+	<select id="querySellBackHouseAll" resultMap="sellBackHouseResultMap">
+		SELECT S3.SELLBACKSHEETID,S3.SELLSHEETID,S3.BACKGOODSTIME,S3.COUNTS,
+		S1.SELLID,S1.GOODSID,S1.COUNTS,S1.SELLSINGLEPRICE,S1.SELLTIME,
+		G1.GOODSID,G1.GOODSTYPEID,G1.GOODSNAME,G1.BRAND,G1.PRODUCTMODEL,G1.COSTPRICE,G1.RETAILPRICE,G1.GOODSCODE,G1.BARCODE,G1.SUPPLIERID,
+		G2.GOODSTYPEID,G2.GOODSTYPE,
+		S2.SUPPLIERID,S2.SUPPLIERNAME,S2.SUPPLIERTYPE,S2.CONTACTS,S2.CONTACTTEL,S2.SUPPLIERADDRESS,S2.SUPPLIERFAX,S2.SUPPLIERINFO,S2.SUPPLIERASSESS FROM TBL_SELL S1,TBL_GOODS G1,TBL_GOODSTYPE G2,TBL_SUPPLIER S2,TBL_SELLBACKHOUSE S3 WHERE S1.GOODSID=G1.GOODSID AND G1.GOODSTYPEID=G2.GOODSTYPEID AND S2.SUPPLIERID=G1.SUPPLIERID AND S3.SELLSHEETID=S1.SELLID ORDER BY S3.SELLBACKSHEETID
+	</select>
+	<delete id="deleteSellBackHouse">
+		DELETE FROM TBL_SELLBACKHOUSE WHERE SELLBACKSHEETID=#{sellBackHouseId}
+	</delete>
+	<update id="editorSellBackHouse">
+		UPDATE TBL_SELLBACKHOUSE SET COUNTS=#{counts},BACKGOODSTIME=#{backGoodsTime} WHERE SELLBACKSHEETID=#{sellbackSheetId}
+	</update>
+	<insert id="addSellBackHouse">
+		INSERT INTO TBL_SELLBACKHOUSE VALUES(tbl_SellBackHouse_seq.NEXTVAL,#{sell.sellId},#{counts},#{backGoodsTime})
+	</insert>
+	
+	<select id="querySellBackHouse" parameterType="int" resultMap="sellBackHouseResultMap">
+		SELECT S3.SELLBACKSHEETID,S3.SELLSHEETID,S3.BACKGOODSTIME,S3.COUNTS,
+		S1.SELLID,S1.GOODSID,S1.COUNTS,S1.SELLSINGLEPRICE,S1.SELLTIME,
+		G1.GOODSID,G1.GOODSTYPEID,G1.GOODSNAME,G1.BRAND,G1.PRODUCTMODEL,G1.COSTPRICE,G1.RETAILPRICE,G1.GOODSCODE,G1.BARCODE,G1.SUPPLIERID,
+		G2.GOODSTYPEID,G2.GOODSTYPE,
+		S2.SUPPLIERID,S2.SUPPLIERNAME,S2.SUPPLIERTYPE,S2.CONTACTS,S2.CONTACTTEL,S2.SUPPLIERADDRESS,S2.SUPPLIERFAX,S2.SUPPLIERINFO,S2.SUPPLIERASSESS FROM TBL_SELL S1,TBL_GOODS G1,TBL_GOODSTYPE G2,TBL_SUPPLIER S2,TBL_SELLBACKHOUSE S3 WHERE S1.GOODSID=G1.GOODSID AND G1.GOODSTYPEID=G2.GOODSTYPEID AND S2.SUPPLIERID=G1.SUPPLIERID AND S3.SELLSHEETID=S1.SELLID AND S3.SELLBACKSHEETID=#{sellBackSheetId}
+	</select>
+</mapper>

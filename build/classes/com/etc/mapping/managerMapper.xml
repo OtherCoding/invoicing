@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etc.mapping.managerMapper">
+	
+	<resultMap id="ManagerResultMap" type="Manager">
+		<id property="managerId" column="MANAGERID" />
+		<result property="managerName" column="MANAGERNAME"/>
+		<result property="managerPwd" column="MANAGERPWD"/>
+		<result property="permission" column="PERMISSION"/>
+		<association property="emp" javaType="Employees">
+			<id property="empNo" column="EMPNO" />
+			<result property="empName" column="EMPNAME"/>
+			<result property="job" column="JOB"/>
+		</association>
+	</resultMap>
+	<select id="queryManagerAll" resultMap="ManagerResultMap">
+	SELECT M.MANAGERNAME ,M.MANAGERID, E.EMPNAME,M.MANAGERID,E.JOB,M.PERMISSION FROM TBL_MANAGER M , TBL_EMPLOYEES E WHERE E.EMPNO = M.EMPNO
+	</select>
+	<delete id="deleteManager" parameterType="int">
+	DELETE FROM  TBL_MANAGER WHERE MANAGERID = #{managerId}
+	</delete>
+	<select id="queryEmp" resultType="Employees">
+	SELECT EMPNO , EMPNAME ,JOB FROM TBL_EMPLOYEES
+	</select>
+	<insert id="addManager">
+	 INSERT INTO TBL_MANAGER (MANAGERID,MANAGERNAME,EMPNO,MANAGERPWD,PERMISSION) VALUES (TBL_MANAGER_SEQ.NEXTVAL,#{managerName},#{emp.empNo},#{managerPwd},#{permission})
+	</insert>
+	<select id="checkLogin" resultType="int">
+	SELECT * FROM TBL_MANAGER WHERE MANAGERNAME = #{managerName} AND MANAGERPWD = #{managerPwd}
+	</select>
+</mapper>
